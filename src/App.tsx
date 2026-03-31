@@ -796,9 +796,13 @@ export default function App() {
         {/* Header */}
         <header className="p-8 border-bottom border-zinc-800 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 bg-zinc-900/50 backdrop-blur-sm">
           <div>
-            <h1 className="text-4xl font-black tracking-tighter uppercase italic flex items-center gap-3">
-              <Zap className="text-orange-500 fill-orange-500" size={32} />
-              SynthGuitar <span className="text-orange-500">Pro</span>
+            <h1 className="flex items-center gap-4">
+              <Zap className="text-orange-500 fill-orange-500" size={48} />
+              <div className="flex flex-col leading-[0.85] font-black tracking-tighter uppercase italic text-4xl">
+                <span><span className="text-orange-500">J</span>oe's</span>
+                <span><span className="text-orange-500">S</span>exy</span>
+                <span><span className="text-orange-500">S</span>ynths</span>
+              </div>
             </h1>
             <p className="text-xs font-mono text-zinc-500 mt-1 uppercase tracking-widest">
               High-Gain Neural Synth Processor // v1.0.4
