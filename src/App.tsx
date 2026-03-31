@@ -122,7 +122,9 @@ const useAudioEngine = () => {
   const [isBypassed, setIsBypassed] = useState(false);
   const [latencyMode, setLatencyMode] = useState<'stable' | 'turbo'>('stable');
   const [recordedUrl, setRecordedUrl] = useState<string | null>(null);
-  const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
+  const [inputDevices, setInputDevices] = useState<MediaDeviceInfo[]>([]);
+  const [outputDevices, setOutputDevices] = useState<MediaDeviceInfo[]>([]);
+  const [selectedInputId, setSelectedInputId] = useState<string>('default');
   const [selectedOutputId, setSelectedOutputId] = useState<string>('default');
   const [params, setParams] = useState<AudioParams>({
     gain: 1.0,
@@ -142,7 +144,8 @@ const useAudioEngine = () => {
     const fetchDevices = async () => {
       try {
         const allDevices = await navigator.mediaDevices.enumerateDevices();
-        setDevices(allDevices.filter(d => d.kind === 'audiooutput'));
+        setInputDevices(allDevices.filter(d => d.kind === 'audioinput'));
+        setOutputDevices(allDevices.filter(d => d.kind === 'audiooutput'));
       } catch (err) {
         console.error("Error fetching devices:", err);
       }
@@ -189,6 +192,7 @@ const useAudioEngine = () => {
 
       const stream = await navigator.mediaDevices.getUserMedia({ 
         audio: {
+          deviceId: selectedInputId !== 'default' ? { exact: selectedInputId } : undefined,
           echoCancellation: false,
           noiseSuppression: false,
           autoGainControl: false
@@ -344,6 +348,13 @@ const useAudioEngine = () => {
     await start();
   };
 
+  // Handle input device change
+  useEffect(() => {
+    if (isActive) {
+      resync();
+    }
+  }, [selectedInputId]);
+
   useEffect(() => {
     if (!isActive) return;
     const ctx = audioContextRef.current!;
@@ -383,7 +394,10 @@ const useAudioEngine = () => {
     startRecording,
     stopRecording,
     recordedUrl,
-    devices,
+    inputDevices,
+    outputDevices,
+    selectedInputId,
+    setSelectedInputId,
     selectedOutputId,
     setSelectedOutputId,
     isBypassed,
@@ -762,7 +776,10 @@ export default function App() {
     startRecording,
     stopRecording,
     recordedUrl,
-    devices,
+    inputDevices,
+    outputDevices,
+    selectedInputId,
+    setSelectedInputId,
     selectedOutputId,
     setSelectedOutputId,
     isBypassed,
@@ -789,6 +806,25 @@ export default function App() {
           </div>
           
           <div className="flex flex-wrap items-center gap-4">
+            {/* Input Selector */}
+            <div className="flex flex-col gap-1">
+              <label className="text-[10px] font-mono uppercase tracking-widest text-zinc-500 flex items-center gap-1">
+                <Mic size={10} /> Input Device
+              </label>
+              <select 
+                value={selectedInputId}
+                onChange={(e) => setSelectedInputId(e.target.value)}
+                className="bg-zinc-950 border border-zinc-800 text-xs font-mono px-3 py-2 rounded-lg text-zinc-300 focus:outline-none focus:border-orange-500"
+              >
+                <option value="default">Default Input</option>
+                {inputDevices.map(device => (
+                  <option key={device.deviceId} value={device.deviceId}>
+                    {device.label || `Input ${device.deviceId.slice(0, 5)}`}
+                  </option>
+                ))}
+              </select>
+            </div>
+
             {/* Output Selector */}
             <div className="flex flex-col gap-1">
               <label className="text-[10px] font-mono uppercase tracking-widest text-zinc-500 flex items-center gap-1">
@@ -800,7 +836,7 @@ export default function App() {
                 className="bg-zinc-950 border border-zinc-800 text-xs font-mono px-3 py-2 rounded-lg text-zinc-300 focus:outline-none focus:border-orange-500"
               >
                 <option value="default">Default Speaker</option>
-                {devices.map(device => (
+                {outputDevices.map(device => (
                   <option key={device.deviceId} value={device.deviceId}>
                     {device.label || `Output ${device.deviceId.slice(0, 5)}`}
                   </option>
