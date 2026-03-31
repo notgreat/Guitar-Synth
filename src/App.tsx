@@ -799,9 +799,8 @@ export default function App() {
             <h1 className="flex items-center gap-4">
               <Zap className="text-orange-500 fill-orange-500" size={48} />
               <div className="flex flex-col leading-[0.85] font-black tracking-tighter uppercase italic text-4xl">
-                <span><span className="text-orange-500">J</span>oe's</span>
-                <span><span className="text-orange-500">S</span>exy</span>
-                <span><span className="text-orange-500">S</span>ynths</span>
+                <span><span className="text-orange-500">S</span>ynth</span>
+                <span><span className="text-orange-500">Z</span>one</span>
               </div>
             </h1>
             <p className="text-xs font-mono text-zinc-500 mt-1 uppercase tracking-widest">

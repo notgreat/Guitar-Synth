@@ -1,5 +1,5 @@
 {
-  "name": "Joe's Sexy Synths",
+  "name": "Synth Zone",
   "description": "Real-time guitar-to-synth processor with aggressive modulation, bitcrushing, and wobble effects.",
   "requestFramePermissions": ["microphone"]
 }
