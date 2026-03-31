@@ -1,0 +1,5 @@
+{
+  "name": "SynthGuitar Pro",
+  "description": "Real-time guitar-to-synth processor with aggressive modulation, bitcrushing, and wobble effects.",
+  "requestFramePermissions": ["microphone"]
+}
